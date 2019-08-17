@@ -4,7 +4,15 @@
 	<!-- Startup Commands -->
 		<!-- sudo rmmod xpad && sudo xboxdrv -->
 		<!-- roscore -->
-		<!-- cd ~/gitRepos/design_control_demo && source devel/setup.bash && roslaunch high_level_controller launch_all.launch-->	
+		<!-- cd ~/gitRepos/design_control_demo && source devel/setup.bash && roslaunch high_level_controller launch_all.launch-->
+		<!-- cd ~/gitRepos/design_control_demo && source devel/setup.bash && rosrun joy joy_node-->	
+		<!-- cd ~/gitRepos/design_control_demo && source devel/setup.bash && rosrun rosserial_python serial_node.py /dev/ttyACM0-->
+		<!-- cd ~/gitRepos/design_control_demo && source devel/setup.bash && rosrun high_level_coroller high_level_controller.py-->
+		<!-- cd ~/gitRepos/design_control_demo && source devel/setup.bash && rosrun high_level_coroller high_level_controller_fg.py-->
+
+	<!-- Force Glove Commands -->
+		<!-- cd ~/gitRepos/design_control_demo && source devel/setup.bash && roslaunch read_force_glove dual_force_glove_launch.launch-->
+		<!-- cd ~/gitRepos/design_control_demo && source devel/setup.bash && rosrun read_force_glove interpret_force_glove.py-->
 
 	<!-- Parameters -->
 		<!-- <param name="sendTraj" value="0" type="double" /> -->
