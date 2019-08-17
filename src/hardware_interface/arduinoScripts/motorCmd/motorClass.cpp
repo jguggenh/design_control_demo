@@ -135,56 +135,56 @@ int motorClass::pos_closedLoopController(void){
 
 ////////////velocity controller functions!\\\\\\\\\\\\\\\\\
 
-float motorClass::motor_velocity_calc(void){
-  calc_t();
-  encodercount = readEnc();
-  MotorVel = (1/_gearRatio)*(1/_encCntsRev)*(encodercount-encodercountPrev)/dt; //motor shaft revolutions per second
-  storeOldVals();
-  return MotorVel; 
-}
-
-
-float motorClass::vel_proportional_control(void){
-  errorVel = desiredMotorVel - MotorVel;
-  pCommandv = Kpv * errorVel;
-  return pCommandv;
-}
-
-
-float motorClass::vel_derivative_control(void){
-  calc_t();
-  dCommandv = Kdv * (errorVel - errorVelPrev) / dt;
-  return dCommandv;
-}
-
-
-float motorClass::vel_integral_control(void){
-  calc_t();
-  errorVel = desiredMotorVel - MotorVel;
-  integratedVelError = integratedVelError + errorVel;
-  
-  iCommandv = Kiv*integratedVelError;
-  return iCommandv;
-}
-
-
-int motorClass::vel_closedLoopController(void){
-  motor_velocity_calc();
-  motor_position_calc();
-
-  float Pv=vel_proportional_control();
-  float Dv=vel_derivative_control();
-  float Iv=vel_integral_control();
-
-  currentCommandv = Pv+Iv+Dv;
-
-  currentCommandv = constrain(map(currentCommandv, -1000, 1000, -255, 255),-255,255);
-  if (currentCommandv < -0.001) {
-    digitalWrite(_dirPin, HIGH);
-  }
-  else if(currentCommandv > 0.001){
-    digitalWrite(_dirPin, LOW);
-  }
-  analogWrite(_pwmPin,abs(currentCommandv));
-  return currentCommandv; 
-}
+//float motorClass::motor_velocity_calc(void){
+//  calc_t();
+//  encodercount = readEnc();
+//  MotorVel = (1/_gearRatio)*(1/_encCntsRev)*(encodercount-encodercountPrev)/dt; //motor shaft revolutions per second
+//  storeOldVals();
+//  return MotorVel; 
+//}
+//
+//
+//float motorClass::vel_proportional_control(void){
+//  errorVel = desiredMotorVel - MotorVel;
+//  pCommandv = Kpv * errorVel;
+//  return pCommandv;
+//}
+//
+//
+//float motorClass::vel_derivative_control(void){
+//  calc_t();
+//  dCommandv = Kdv * (errorVel - errorVelPrev) / dt;
+//  return dCommandv;
+//}
+//
+//
+//float motorClass::vel_integral_control(void){
+//  calc_t();
+//  errorVel = desiredMotorVel - MotorVel;
+//  integratedVelError = integratedVelError + errorVel;
+//  
+//  iCommandv = Kiv*integratedVelError;
+//  return iCommandv;
+//}
+//
+//
+//int motorClass::vel_closedLoopController(void){
+//  motor_velocity_calc();
+//  motor_position_calc();
+//
+//  float Pv=vel_proportional_control();
+//  float Dv=vel_derivative_control();
+//  float Iv=vel_integral_control();
+//
+//  currentCommandv = Pv+Iv+Dv;
+//
+//  currentCommandv = constrain(map(currentCommandv, -1000, 1000, -255, 255),-255,255);
+//  if (currentCommandv < -0.001) {
+//    digitalWrite(_dirPin, HIGH);
+//  }
+//  else if(currentCommandv > 0.001){
+//    digitalWrite(_dirPin, LOW);
+//  }
+//  analogWrite(_pwmPin,abs(currentCommandv));
+//  return currentCommandv; 
+//}

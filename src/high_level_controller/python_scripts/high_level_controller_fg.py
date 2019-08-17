@@ -4,7 +4,7 @@ import rospy
 import time
 import random
 from std_msgs.msg import Float32
-from sensor_msgs.msg import Joy
+from std_msgs.msg import Int32
 
 # global variables
 global roll_go_home_flag
@@ -18,44 +18,43 @@ gripper_go_open_door_flag = 0 # which direction to move gripper
 roll_go_home_flag = 0 # which direction to move roll
 roll_go_open_door_flag = 0 # which direction to move roll
 
-def joy_callback(data):
+def force_glove_callback(data):
 	global roll_go_home_flag
 	global roll_go_open_door_flag
 	global gripper_go_home_flag
 	global gripper_go_open_door_flag
 	global gripper_move_flag
 
-	# check if pressing "A"
-	if data.buttons[0] == 1:
+	# command1 = z go home
+	if data.data == 1:
 		# basically a go signal for predetermined return to home position
 		z_actuator_command_pub.publish(0)
 
-	# check if pressing "B"
-	if data.buttons[1] == 1:
+	# command2 = z go open door
+	if data.data == 2:
 		# basically a go signal for predetermined action primitive
 		z_actuator_command_pub.publish(1)
 
-	# check if pressing "X"
-	if data.buttons[2] == 1:
+	# command3 = roll/gripper go home
+	if data.data == 3:
 		# basically a go signal for predetermined return to home position
 		gripper_move_flag = 1
 		gripper_go_home_flag = 1
 		roll_go_home_flag = 1
 		# roll_actuator_command_pub.publish(0)
 
-	# check if pressing "Y"
-	if data.buttons[3] == 1:
+	# command4 = roll/gripper go open door
+	if data.data == 4:
 		# basically a go signal for predetermined action primitive
 		gripper_move_flag = 1
 		gripper_go_open_door_flag = 1 # have to delay move
 		roll_go_open_door_flag = 1
 		# roll_actuator_command_pub.publish(1)
 
-	if data.buttons[5] == 1:
+	# command5 = everything stop
+	if data.data == 5:
 		# stop gripper
 		gripper_command_pub.publish(2)
-
-
 
 
 def main():
@@ -75,8 +74,8 @@ def main():
 	#roll_actuator_command_pub.publish(0)
 
 	# initialize joy subscriber
-	global joySubscriber
-	joySubscriber = rospy.Subscriber("joy", Joy, joy_callback)
+	global force_glove_subscriber
+	force_glove_subscriber = rospy.Subscriber("CommandCode", Int32, force_glove_callback)
 
 	# high level control loop
 	control_loop()

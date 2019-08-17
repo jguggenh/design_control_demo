@@ -2,8 +2,8 @@
 
 // Slave Select pins for encoders 1, 2 and 3
 // Feel free to reallocate these pins to best suit your circuit
-const int slaveSelectEnc1 = 8;
-
+const int slaveSelectEnc1 = 7;
+const int slaveSelectEnc2 = 8;
 
 void initEncoder(int encoderName){
   // Set slave selects as outputs
@@ -32,6 +32,7 @@ void initEncoder(int encoderName){
 void initEncoders() {
   SPI.begin();
   initEncoder(slaveSelectEnc1);
+  initEncoder(slaveSelectEnc2);
 }
 
 
@@ -58,6 +59,7 @@ void clearEncoderCount(int encoderName){
 
 void clearEncoderCounts() {
   clearEncoderCount(slaveSelectEnc1);
+  clearEncoderCount(slaveSelectEnc2);
 }
 
 

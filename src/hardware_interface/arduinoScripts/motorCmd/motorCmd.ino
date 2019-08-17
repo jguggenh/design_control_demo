@@ -1,25 +1,25 @@
 #include "motorClass.h"
 #include <ArduinoHardware.h>
-#include "DualMC33926MotorShield.h"
-
 #include <ros.h>
+#include <sensor_msgs/Joy.h>
 #include <std_msgs/Float32.h>
 
+#include "DualMC33926MotorShield.h"
+
 // Robotzone motors
-float z_actuator_gear_ratio = 721;
+float z_actuator_gear_ratio = 71;
 float z_actuator_enc_cnts_per_rev = 48.0;
-float yaw_actuator_gear_ratio = 51;
-float yaw_actuator_enc_cnts_per_rev = 48.0;
+float roll_actuator_gear_ratio = 71;
+float roll_actuator_enc_cnts_per_rev = 48.0;
 
 // create motor objects
-//motorClass::motorClass(int pwmPin,int dirPin, int encPin,float gearRatio, float encCntsRev)
-motorClass z_actuator =  motorClass(5,3,7,z_actuator_gear_ratio,z_actuator_enc_cnts_per_rev); 
-motorClass yaw_actuator =  motorClass(6,4,8,yaw_actuator_gear_ratio,yaw_actuator_enc_cnts_per_rev);
+// motorClass::motorClass(int pwmPin,int dirPin, int encPin,float gearRatio, float encCntsRev);
+motorClass z_actuator =  motorClass(5,3,8,z_actuator_gear_ratio,z_actuator_enc_cnts_per_rev); 
+motorClass roll_actuator =  motorClass(6,4,2,roll_actuator_gear_ratio,roll_actuator_enc_cnts_per_rev);
 
 // gripper motor stuff
 DualMC33926MotorShield md;
 int gripperSpeed = 100;
-
 
 // ros stuff
 ros::NodeHandle arduino2Motor;
@@ -29,10 +29,10 @@ std_msgs::Float32 testing;
 ros::Publisher testingPub("testing", &testing);
 
 // home and open door position for actuators
-int z_actuator_home_pos = 0; //TODO
-int z_actuator_open_door_pos = 20; //TODO
-int yaw_actuator_home_pos = 0; //TODO
-int yaw_actuator_open_door_pos = .5; //TODO
+float z_actuator_home_pos = 0; //TODO
+float z_actuator_open_door_pos = -0.15; //TODO
+float roll_actuator_home_pos = 0; //TODO
+float roll_actuator_open_door_pos = 0.5; //TODO
 
 void z_actuator_callback(const std_msgs::Float32& command)
 {
@@ -49,18 +49,18 @@ void z_actuator_callback(const std_msgs::Float32& command)
 	}
 }
 
-void yaw_actuator_callback(const std_msgs::Float32& command)
+void roll_actuator_callback(const std_msgs::Float32& command)
 {
 	// go home
 	if (command.data == 0)
 	{
-		yaw_actuator.setMotorPos(yaw_actuator_home_pos);
+		roll_actuator.setMotorPos(roll_actuator_home_pos);
 	}
 	
 	// go to open door position
 	if (command.data == 1)
 	{
-		yaw_actuator.setMotorPos(yaw_actuator_open_door_pos);
+		roll_actuator.setMotorPos(roll_actuator_open_door_pos);
 	}
 }
 
@@ -69,26 +69,30 @@ void gripper_callback(const std_msgs::Float32& command)
   // go home
   if (command.data == 0)
   {
-    md.setM1Speed(-1*gripperSpeed);
+    md.setM1Speed(100);
+    testing.data = 0;
+    testingPub.publish(&testing);
   }
-  
-  // go to open door position
-  if (command.data == 1)
+  else if (command.data == 1) // go to open door position
   {
-    md.setM1Speed(gripperSpeed);
+    md.setM1Speed(-100);
+    testing.data = 1;
+    testingPub.publish(&testing);
   }
-
-  // stop moving!
-  if (command.data == 2)
+  else // stop moving!
   {
     md.setM1Speed(0);
+    testing.data = 2;
+    testingPub.publish(&testing);
   }
 }
 
+
 // robotzone subscribers
 ros::Subscriber<std_msgs::Float32> z_actuator_command_sub("z_actuator_command", &z_actuator_callback);
-ros::Subscriber<std_msgs::Float32> yaw_actuator_command_sub("yaw_actuator_command", &yaw_actuator_callback);
+ros::Subscriber<std_msgs::Float32> roll_actuator_command_sub("roll_actuator_command", &roll_actuator_callback);
 ros::Subscriber<std_msgs::Float32> gripper_command_sub("gripper_command", &gripper_callback);
+
 
 void setup () 
 { 
@@ -97,7 +101,7 @@ void setup ()
   
   // subscriber
   arduino2Motor.subscribe(z_actuator_command_sub);
-  arduino2Motor.subscribe(yaw_actuator_command_sub);
+  arduino2Motor.subscribe(roll_actuator_command_sub);
   arduino2Motor.subscribe(gripper_command_sub);
 
   // advertise testing publisher
@@ -106,29 +110,32 @@ void setup ()
 //  Serial.begin(57600);  
 //  forceMotor.setMotorForce(1);
 
+  // gripper
+  md.init();
+
   delay(1000);
 }
 
 int printing = 0;
 void loop ()
 {
-  if (printing > 1000)
-  {  
-	  // send testing
-	  testing.data = z_actuator.MotorPos;
-	  testingPub.publish(&testing);
-
-	  // Serial.println(forceMotor.MotorForce);
-
-	  // reset
-	  printing = 0; 
-  }
+//  if (printing > 1000)
+//  {  
+//	  // send testing
+//	  testing.data = z_actuator.currentCommandp;
+//	  testingPub.publish(&testing);
+//
+//	  // Serial.println(forceMotor.MotorForce);
+//
+//	  // reset
+//	  printing = 0; 
+//  }
   
   // control robotzone motors
   z_actuator.pos_closedLoopController();
-  yaw_actuator.pos_closedLoopController();
+  roll_actuator.pos_closedLoopController();
 
-  printing = printing + 1;
+//  printing = printing + 1;
 
   arduino2Motor.spinOnce();
 }

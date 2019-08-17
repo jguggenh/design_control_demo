@@ -41,9 +41,9 @@ public:
 
     ////////////position\\\\\\\\\\\\\\\\\
     //Position controller gains
-    float Kpp = 5000.0;
+    float Kpp = 2500.0;
     float Kdp = 0.0;
-    float Kip = 0;//100000;
+    float Kip = 1.0;//100000;
 
     // position controller functions
     float motor_position_calc(void);

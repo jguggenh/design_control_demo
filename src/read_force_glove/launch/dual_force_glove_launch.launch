@@ -1,7 +1,3 @@
-<!-- -*- mode: XML -*- -->
-
-<!-- cd ~/gitRepos/design_control_demo && source devel/setup.bash && roslaunch read_force_glove dual_force_glove_launch.launch-->
-
 <launch>
   <!--Run rosserial for the conveyor arduino-->
 	 <node name='right_glove' pkg='rosserial_python' type='serial_node.py' args='/dev/ttyUSB0' respawn="true"/>

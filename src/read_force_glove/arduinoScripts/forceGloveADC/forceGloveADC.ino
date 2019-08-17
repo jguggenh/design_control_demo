@@ -6,37 +6,37 @@
 #include <Wire.h>
 
 // ros stuff
-ros::NodeHandle forceGloveADC;
+ros::NodeHandle forceGloveADCLeft;
 std_msgs::Int16MultiArray forceGloveSignal;
-ros::Publisher forceGlovePub("forceGlovePub", &forceGloveSignal);
+ros::Publisher forceGlovePubL("forceGlovePubLeft", &forceGloveSignal);
 
 // sampe rate ros
 //std_msgs::Int16 stSignal;
 //ros::Publisher stPub("stPub", &stSignal);
 
 // pins for fsr
-int fsrPinRing = 5;     // the FSR and 10K pulldown are connected to a0
-int fsrPinThumb = 7;     // the FSR and 10K pulldown are connected to a0
-int fsrPinPointer = 6;     // the FSR and 10K pulldown are connected to a0
-int fsrPinMiddle = 4;
+int fsrPinThumbL = 6;     // the FSR and 10K pulldown are connected to a0
+int fsrPinIndexL = 7;     // the FSR and 10K pulldown are connected to a0
+int fsrPinMiddleL = 4;     // the FSR and 10K pulldown are connected to a0
+int fsrPinRingL = 5;
+int fsrPinPinkyL = 2;
 
 int prevTime = 0;
 int currTime = 0;
-int num_sensors = 2;
 
 void setup(void) 
 {
   // initiate ros 
-  forceGloveADC.initNode();
+  forceGloveADCLeft.initNode();
   
   // define message
-  forceGloveSignal.layout.dim[0].size = num_sensors;
-  forceGloveSignal.layout.dim[0].stride = 1*num_sensors;
-  forceGloveSignal.data = (int *)malloc(sizeof(int)*num_sensors);
-  forceGloveSignal.data_length = num_sensors;
+  forceGloveSignal.layout.dim[0].size = 2;
+  forceGloveSignal.layout.dim[0].stride = 1*2;
+  forceGloveSignal.data = (int *)malloc(sizeof(int)*2);
+  forceGloveSignal.data_length = 5;
   
   //advertise signal
-  forceGloveADC.advertise(forceGlovePub);
+  forceGloveADCLeft.advertise(forceGlovePubL);
 
   //advertise sample rate pub
 //  forceGloveA/C.advertise(stPub);
@@ -45,14 +45,19 @@ void setup(void)
 void loop(void) 
 {
   // read force sensing resistor signal
-  forceGloveSignal.data[0] = analogRead(6); 
-  forceGloveSignal.data[1] = analogRead(5);  
+  forceGloveSignal.data[0] = analogRead(fsrPinThumbL); 
+  forceGloveSignal.data[1] = analogRead(fsrPinIndexL);  
+  forceGloveSignal.data[2] = analogRead(fsrPinMiddleL); 
+  forceGloveSignal.data[3] = analogRead(fsrPinRingL);  
+  forceGloveSignal.data[4] = analogRead(fsrPinPinkyL); 
+
+  
 
   // publish that value
-  forceGlovePub.publish(&forceGloveSignal);
+  forceGlovePubL.publish(&forceGloveSignal);
 
   // ros stuff
-  forceGloveADC.spinOnce();
+  forceGloveADCLeft.spinOnce();
 
   //check sample rate
 //  currTime = millis();
