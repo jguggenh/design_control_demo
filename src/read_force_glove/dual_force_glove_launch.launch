@@ -1,0 +1,7 @@
+<launch>
+  <!--Run rosserial for the conveyor arduino-->
+	 <node name='right_glove' pkg='rosserial_python' type='serial_node.py' args='/dev/ttyUSB0' respawn="true"/>
+
+  <!--Run rosserial for the conveyor arduino-->
+	 <node name='left_glove' pkg='rosserial_python' type='serial_node.py' args='/dev/ttyUSB1' respawn="true"/>  
+</launch>
