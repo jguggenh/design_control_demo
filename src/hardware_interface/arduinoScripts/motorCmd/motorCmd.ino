@@ -30,9 +30,9 @@ ros::Publisher testingPub("testing", &testing);
 
 // home and open door position for actuators
 float z_actuator_home_pos = 0; //TODO
-float z_actuator_open_door_pos = -0.15; //TODO
+float z_actuator_open_door_pos = -0.189; //TODO
 float roll_actuator_home_pos = 0; //TODO
-float roll_actuator_open_door_pos = 0.5; //TODO
+float roll_actuator_open_door_pos = 0.50; //TODO
 
 void z_actuator_callback(const std_msgs::Float32& command)
 {
@@ -119,23 +119,23 @@ void setup ()
 int printing = 0;
 void loop ()
 {
-//  if (printing > 1000)
-//  {  
-//	  // send testing
-//	  testing.data = z_actuator.currentCommandp;
-//	  testingPub.publish(&testing);
-//
-//	  // Serial.println(forceMotor.MotorForce);
-//
-//	  // reset
-//	  printing = 0; 
-//  }
+  if (printing > 1000)
+  {  
+	  // send testing
+	  testing.data = z_actuator.MotorPos;
+	  testingPub.publish(&testing);
+
+	  // Serial.println(forceMotor.MotorForce);
+
+	  // reset
+	  printing = 0; 
+  }
   
   // control robotzone motors
   z_actuator.pos_closedLoopController();
   roll_actuator.pos_closedLoopController();
 
-//  printing = printing + 1;
+  printing = printing + 1;
 
   arduino2Motor.spinOnce();
 }

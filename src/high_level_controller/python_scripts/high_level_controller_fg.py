@@ -9,6 +9,7 @@ from std_msgs.msg import Int32
 # global variables
 global roll_go_home_flag
 global roll_go_open_door_flag
+global roll_move_flag
 global gripper_go_home_flag
 global gripper_go_open_door_flag
 global gripper_move_flag
@@ -17,10 +18,12 @@ gripper_go_home_flag = 0 # which direction to move gripper
 gripper_go_open_door_flag = 0 # which direction to move gripper
 roll_go_home_flag = 0 # which direction to move roll
 roll_go_open_door_flag = 0 # which direction to move roll
+roll_move_flag = 0
 
 def force_glove_callback(data):
 	global roll_go_home_flag
 	global roll_go_open_door_flag
+	global roll_move_flag
 	global gripper_go_home_flag
 	global gripper_go_open_door_flag
 	global gripper_move_flag
@@ -91,10 +94,13 @@ def control_loop():
 
 	# gripper move variables
 	gripper_move_time = 3 # how long to delay the gripper moving (seconds)
+	gripper_move_counter = 0
+
 
 	# global variables
 	global roll_go_home_flag
 	global roll_go_open_door_flag
+	global roll_move_flag
 	global gripper_go_home_flag
 	global gripper_go_open_door_flag
 	global gripper_move_flag
@@ -103,9 +109,9 @@ def control_loop():
 		# move the gripper
 		if gripper_move_flag == 1:
 			if gripper_go_home_flag == 1:
-				gripper_actuator_command_pub.publish(0)
+				gripper_command_pub.publish(0)
 			if gripper_go_open_door_flag == 1:
-				gripper_actuator_command_pub.publish(1)
+				gripper_command_pub.publish(1)
 
 			# iterate the counter
 			gripper_move_counter = gripper_move_counter + 1

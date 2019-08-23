@@ -28,11 +28,11 @@ class ForceGloveInterpreter():
         self.counter=0
         #edit or add commands here, make sure you update the code farther down if you add codes
         # [rthumb, rindex, rmiddle, rring, rpinkie, lthumb, lindex, lmiddle, lring, lpinkie
-        self.command1=[0,1,1,1,1,0,1,1,1,1] # z go home, thumbs off
-        self.command2=[1,0,1,1,1,1,0,1,1,1] # z go open door, indexes off
-        self.command3=[1,1,0,1,1,1,1,0,1,1] # roll/gripper go home, middles off
-        self.command4=[1,1,1,1,0,1,1,1,1,0] # roll/gripper go open door, pinkies off
-        self.command5=[1,0,0,0,0,1,0,0,0,0] # everything stop, only thumbs
+        self.command1=[1,0,0,0,0,0,0,0,0,0] # z go home, thumbs off
+        self.command2=[0,1,0,0,0,0,1,0,0,0] # z go open door, indexes off
+        self.command3=[0,0,1,0,0,0,0,1,0,0] # roll/gripper go home, middles off
+        self.command4=[0,0,0,0,1,1,0,0,0,1] # roll/gripper go open door, pinkies off
+        self.command5=[1,1,0,0,0,0,0,0,0,0] # everything stop, only thumbs
         self.commandtest=[0,0,0,0,1,0,0,0,0,0]
         self.commandtopub=0
         self.rate=rospy.Rate(50)
@@ -123,8 +123,6 @@ class ForceGloveInterpreter():
                 self.commandtopub=4
             if self.binary==self.command5:
                 self.commandtopub=5
-            if self.binary==self.command6:
-                self.commandtopub=6
             if self.binary==self.commandtest:
                 self.commandtopub=7
 

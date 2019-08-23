@@ -9,18 +9,21 @@ from sensor_msgs.msg import Joy
 # global variables
 global roll_go_home_flag
 global roll_go_open_door_flag
+global roll_move_flag
 global gripper_go_home_flag
 global gripper_go_open_door_flag
 global gripper_move_flag
 gripper_move_flag = 0 # whether we should be moving the gripper
-gripper_go_home_flag = 0 # which direction to move gripper
+gripper_go_home_flag = 0 # whichg direction to move gripper
 gripper_go_open_door_flag = 0 # which direction to move gripper
 roll_go_home_flag = 0 # which direction to move roll
 roll_go_open_door_flag = 0 # which direction to move roll
+roll_move_flag = 0
 
 def joy_callback(data):
 	global roll_go_home_flag
 	global roll_go_open_door_flag
+	global roll_move_flag
 	global gripper_go_home_flag
 	global gripper_go_open_door_flag
 	global gripper_move_flag
@@ -54,8 +57,6 @@ def joy_callback(data):
 	if data.buttons[5] == 1:
 		# stop gripper
 		gripper_command_pub.publish(2)
-
-
 
 
 def main():
@@ -92,10 +93,12 @@ def control_loop():
 
 	# gripper move variables
 	gripper_move_time = 3 # how long to delay the gripper moving (seconds)
+	gripper_move_counter = 0
 
 	# global variables
 	global roll_go_home_flag
 	global roll_go_open_door_flag
+	global roll_move_flag
 	global gripper_go_home_flag
 	global gripper_go_open_door_flag
 	global gripper_move_flag
@@ -103,10 +106,13 @@ def control_loop():
 	while (not rospy.is_shutdown()):
 		# move the gripper
 		if gripper_move_flag == 1:
+			print('moving gripper')
 			if gripper_go_home_flag == 1:
-				gripper_actuator_command_pub.publish(0)
+				print('gripper going home')
+				gripper_command_pub.publish(0)
 			if gripper_go_open_door_flag == 1:
-				gripper_actuator_command_pub.publish(1)
+				print('gripper going to open door')
+				gripper_command_pub.publish(1)
 
 			# iterate the counter
 			gripper_move_counter = gripper_move_counter + 1
@@ -118,6 +124,7 @@ def control_loop():
 			gripper_move_counter = 0
 			gripper_move_flag = 0
 			gripper_command_pub.publish(2) # stop command
+			print('stopping gripper')
 
 			# give permission to move roll
 			roll_move_flag = 1
